@@ -3,6 +3,7 @@ import { View } from '../../utils/view';
 import html from './productList.tpl.html';
 import { ProductData } from 'types';
 import { Product } from '../product/product';
+import {analyticsService} from "../../services/analytics.service";
 
 export class ProductList {
   view: View;
@@ -26,10 +27,14 @@ export class ProductList {
   render() {
     this.view.root.innerHTML = '';
 
+    analyticsService.addObserver();
+
     this.products.forEach((product) => {
       const productComp = new Product(product);
       productComp.render();
       productComp.attach(this.view.root);
+
+      analyticsService.addTracking(this.view.root.lastElementChild, product);
     });
   }
 }
