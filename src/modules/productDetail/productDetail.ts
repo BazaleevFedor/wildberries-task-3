@@ -4,6 +4,7 @@ import { formatPrice } from '../../utils/helpers';
 import { ProductData } from 'types';
 import html from './productDetail.tpl.html';
 import { cartService } from '../../services/cart.service';
+import {userService} from "../../services/user.service";
 
 class ProductDetail extends Component {
   more: ProductList;
@@ -20,7 +21,12 @@ class ProductDetail extends Component {
     const urlParams = new URLSearchParams(window.location.search);
     const productId = Number(urlParams.get('id'));
 
-    const productResp = await fetch(`/api/getProduct?id=${productId}`);
+    const productResp = await fetch(`/api/getProduct?id=${productId}`, {
+      headers: {
+        'x-userid': await userService.getId(),
+      }
+    });
+
     this.product = await productResp.json();
 
     if (!this.product) return;
@@ -43,7 +49,11 @@ class ProductDetail extends Component {
         this.view.secretKey.setAttribute('content', secretKey);
       });
 
-    fetch('/api/getPopularProducts')
+    fetch('/api/getPopularProducts', {
+        headers: {
+          'x-userid': await userService.getId(),
+        }
+      })
       .then((res) => res.json())
       .then((products) => {
         this.more.update(products);
