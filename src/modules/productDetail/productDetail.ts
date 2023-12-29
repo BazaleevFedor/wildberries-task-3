@@ -62,6 +62,10 @@ class ProductDetail extends Component {
     this._setInCart();
   }
 
+  /**
+   * Функция, обрабатывающая нажатие на кнопку добавления в избранное
+   * @private
+   */
   private _addToFavourites() {
     if (!this.product) return;
 
@@ -69,6 +73,10 @@ class ProductDetail extends Component {
     this._changeInFavourites();
   }
 
+  /**
+   * Функция, обрабатывающая нажатие на кнопку удаления из избранного
+   * @private
+   */
   private _removeToFavourites() {
     if (!this.product) return;
 
@@ -81,6 +89,10 @@ class ProductDetail extends Component {
     this.view.btnBuy.disabled = true;
   }
 
+  /**
+   * Функция, изменяющая состояние кнопки избранного
+   * @private
+   */
   private _changeInFavourites() {
     this.view.btnFavourites.classList.toggle('is__active');
   }
