@@ -12,6 +12,10 @@ class AnalyticsService {
     this.isActive = true;
   }
 
+  /**
+   * Функция, отправляющая джейсон события роутинга
+   * @param newUrl - новый урл
+   */
   async sendRoutingEvent(newUrl: string) {
     this.isActive && this._sendEvent({
       type: 'route',
@@ -20,6 +24,12 @@ class AnalyticsService {
     });
   }
 
+  /**
+   * Функция, отправляющая джейсон события попадания продукта во вьюпорт
+   * @param property - свойства продукта
+   * @param secretKey - секретный ключ продукта
+   * @param timestamp - время события
+   */
   async sendViewportEvent(property: any, secretKey: string, timestamp: string) {
     this.isActive && this._sendEvent({
       type: property.log && JSON.stringify(property.log) !== '{}' ? 'viewCardPromo' : 'viewCard',
@@ -28,6 +38,10 @@ class AnalyticsService {
     });
   }
 
+  /**
+   * Функция, отправляющая джейсон события добавления продукта в корзину
+   * @param property - свойства продукта
+   */
   async sendCartEvent(property: any) {
     this.isActive && this._sendEvent({
       type: 'addToCart',
@@ -36,8 +50,13 @@ class AnalyticsService {
     });
   }
 
+  /**
+   * Функция, отправляющая джейсон события оформления заказа
+   * @param products - список продуктов в заказе
+   */
   async sendOrderEvent(products: { salePriceU: number, id: number }[]) {
     if (this.isActive) {
+      // определение общей суммы заказа и список id продуктов
       const { totalPrice, productIds } = products.reduce((acc: { totalPrice: number; productIds: number[] }, product) => {
         acc.totalPrice += product.salePriceU;
         acc.productIds.push(product.id);
@@ -52,7 +71,9 @@ class AnalyticsService {
     }
   }
 
-
+  /**
+   * Функция инициализации отслеживания с помощью Intersection Observer
+   */
   addObserver() {
     if (this.isActive) {
       this.products.clear();
@@ -60,13 +81,24 @@ class AnalyticsService {
     }
   }
 
+  /**
+   * Функция, добавляющая отслеживаемые элементы Intersection Observer
+   * @param productElem - элемент продукта
+   * @param product - свойства продукта
+   */
   addTracking(productElem: Element | null, product: any) {
     if (this.isActive && productElem) {
+      // свойства продукта храним в мапе, чтобы не ходить по апи каждый раз для получения свойст продукта
       this.products.set(product.id.toString(), product);
       this.observer.observe(productElem);
     }
   }
 
+  /**
+   * Функция отправки события
+   * @param event - событие
+   * @private
+   */
   private async _sendEvent(event: any) {
     this.isActive && fetch(url, {
       method: 'POST',
@@ -75,9 +107,15 @@ class AnalyticsService {
     });
   }
 
+  /**
+   * Колбек для отслеживания изменения элементов во вьюпорт Intersection Observer
+   * @param entries - отслеживаемые элементы
+   * @private
+   */
   private async _handler(entries: IntersectionObserverEntry[]) {
+    // для ускорения отправки событий, запускаем их асинхронно
     const fetchPromises = entries
-      .filter(entry => entry.isIntersecting)
+      .filter(entry => entry.isIntersecting)  // только те, которые находятся во вьюпорт
       .map(entry => {
         const timestamp = new Date().toISOString();
         const productProperty = this.products.get((entry.target as HTMLElement).dataset.id);
@@ -86,6 +124,7 @@ class AnalyticsService {
           return fetch(`/api/getProductSecretKey?id=${productProperty.id}`)
             .then(res => res.json())
             .then(secretKey => {
+              // создаем событие появления объекта во вьюпорт
               this.sendViewportEvent(productProperty, secretKey, timestamp);
             });
         } else {

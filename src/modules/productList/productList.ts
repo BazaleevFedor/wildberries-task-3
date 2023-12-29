@@ -27,6 +27,7 @@ export class ProductList {
   render() {
     this.view.root.innerHTML = '';
 
+    // инициализируем отслеживание продуктов во вьюпорт
     analyticsService.addObserver();
 
     this.products.forEach((product) => {
@@ -34,6 +35,7 @@ export class ProductList {
       productComp.render();
       productComp.attach(this.view.root);
 
+      // добавляем продукты, которые нужно отслеживать
       analyticsService.addTracking(this.view.root.lastElementChild, product);
     });
   }

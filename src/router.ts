@@ -32,6 +32,7 @@ export default class Router {
     component.attach(this.$appRoot);
     component.render();
 
+    // создаем событие роутинга
     analyticsService.sendRoutingEvent(window.location.href);
   }
 }

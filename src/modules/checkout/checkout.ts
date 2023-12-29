@@ -37,6 +37,7 @@ class Checkout extends Component {
     });
     window.location.href = '/?isSuccessOrder';
 
+    // создаем событие оформления заказа
     analyticsService.sendOrderEvent(this.products);
   }
 }

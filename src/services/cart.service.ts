@@ -12,6 +12,8 @@ class CartService {
   async addProduct(product: ProductData) {
     const products = await this.get();
     await this.set([...products, product]);
+
+    // создаем событие добавления в корзину
     analyticsService.sendCartEvent(product);
   }
 
