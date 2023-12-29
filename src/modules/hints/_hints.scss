@@ -1,0 +1,29 @@
+.hints {
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 550;
+  line-height: 24px;
+
+  .hint {
+    padding: 4px 6px 8px 6px;
+    border-radius: 8px;
+    background: #F6F6FA;
+
+    cursor: pointer;
+    margin-bottom: 4px;
+    margin-right: 6px;
+    text-align: left;
+
+    &__text {
+      background: linear-gradient(93deg, #DA15B8 4.93%, #8D06CC 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+
+      font-size: 21px;
+      font-style: normal;
+      font-weight: 550;
+      line-height: 24px;
+    }
+  }
+}
