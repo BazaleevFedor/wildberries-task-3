@@ -53,6 +53,10 @@ module.exports = (middlewares, devServer) => {
     }, 2500);
   });
 
+  app.get('/api/getHints', (req, res) => {
+    setTimeout(() => res.json({firstHint: 'чехол iphone 13 pro', secondHint: 'коляски agex', thirdHint: 'яндекс станция 2'}), 300);
+  });
+
   app.post('/api/makeOrder', (req, res) => {
     setTimeout(() => {
       res.json({ success: true });
