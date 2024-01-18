@@ -3,6 +3,7 @@ import { notFoundComp } from './modules/notFound/notFound';
 import { homepageComp } from './modules/homepage/homepage';
 import { productDetailComp } from './modules/productDetail/productDetail';
 import { checkoutComp } from './modules/checkout/checkout';
+import {analyticsService} from "./services/analytics.service";
 
 const ROUTES = {
   '/': homepageComp,
@@ -30,5 +31,8 @@ export default class Router {
 
     component.attach(this.$appRoot);
     component.render();
+
+    // создаем событие роутинга
+    analyticsService.sendRoutingEvent(window.location.href);
   }
 }
